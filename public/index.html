@@ -1,43 +1,126 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="theme-color" content="#000000" />
-    <meta
-      name="description"
-      content="Web site created using create-react-app"
-    />
-    <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
-    <!--
-      manifest.json provides metadata used when your web app is installed on a
-      user's mobile device or desktop. See https://developers.google.com/web/fundamentals/web-app-manifest/
-    -->
-    <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
-    <!--
-      Notice the use of %PUBLIC_URL% in the tags above.
-      It will be replaced with the URL of the `public` folder during the build.
-      Only files inside the `public` folder can be referenced from the HTML.
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Todo List</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+</head>
+<body class="bg-gradient-to-r from-purple-300 via-pink-300 to-red-300 flex items-center justify-center min-h-screen">
+    <div class="bg-white p-10 rounded-2xl shadow-2xl w-full max-w-lg" id="root">
+        <div class="flex justify-between items-center mb-6">
+            <h1 class="text-4xl font-extrabold text-gray-800">Todo List</h1>
+            <button id="dark-mode-toggle" class="bg-purple-600 text-white px-4 py-2 rounded-full shadow-lg hover:bg-purple-700 transition duration-300">Dark Mode</button>
+        </div>
+        <input type="text" id="search" placeholder="Search todos..." class="w-full p-4 border border-gray-300 rounded-full mb-4 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent">
+        <div class="flex space-x-2 mb-4">
+            <input type="text" id="todo-input" placeholder="Todo" class="w-1/2 p-4 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent">
+            <input type="text" id="category-input" placeholder="Category" class="w-1/2 p-4 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent">
+        </div>
+        <div class="flex items-center space-x-2 mb-4">
+            <input type="date" id="date-input" class="w-full p-4 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent">
+            <i class="fas fa-calendar-alt text-gray-500"></i>
+        </div>
+        <button id="add-todo" class="bg-purple-600 text-white w-full p-4 rounded-full shadow-lg hover:bg-purple-700 transition duration-300 mb-4">Add Todo</button>
+        <select id="filter" class="w-full p-4 border border-gray-300 rounded-full mb-4 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent">
+            <option value="all">All</option>
+            <option value="completed">Completed</option>
+            <option value="pending">Pending</option>
+        </select>
+        <ul id="todo-list" class="space-y-2"></ul>
+        <div class="text-center mt-4">
+            <p>Created by Hari Priya</p>
+            <a href="GitHub URL" target="_blank" rel="noopener noreferrer">GitHub Project</a> |
+            <a href="Netlify URL" target="_blank" rel="noopener noreferrer">Live Demo</a>
+        </div>
+    </div>
 
-      Unlike "/favicon.ico" or "favicon.ico", "%PUBLIC_URL%/favicon.ico" will
-      work correctly both with client-side routing and a non-root public URL.
-      Learn how to configure a non-root public URL by running `npm run build`.
-    -->
-    <title>React App</title>
-  </head>
-  <body>
-    <noscript>You need to enable JavaScript to run this app.</noscript>
-    <div id="root"></div>
-    <!--
-      This HTML file is a template.
-      If you open it directly in the browser, you will see an empty page.
+    <script>
+        const todoList = document.getElementById('todo-list');
+        const todoInput = document.getElementById('todo-input');
+        const categoryInput = document.getElementById('category-input');
+        const dateInput = document.getElementById('date-input');
+        const addTodoButton = document.getElementById('add-todo');
+        const searchInput = document.getElementById('search');
+        const filterSelect = document.getElementById('filter');
+        const darkModeToggle = document.getElementById('dark-mode-toggle');
 
-      You can add webfonts, meta tags, or analytics to this file.
-      The build step will place the bundled scripts into the <body> tag.
+        addTodoButton.addEventListener('click', () => {
+            const todoText = todoInput.value.trim();
+            const categoryText = categoryInput.value.trim();
+            const dateText = dateInput.value.trim();
 
-      To begin the development, run `npm start` or `yarn start`.
-      To create a production bundle, use `npm run build` or `yarn build`.
-    -->
-  </body>
+            if (todoText) {
+                const li = document.createElement('li');
+                li.className = 'flex justify-between items-center bg-gray-100 p-4 rounded-lg shadow';
+                li.innerHTML = `
+                    <div>
+                        <input type="checkbox" class="mr-2 toggle-status">
+                        <strong class="todo-text">${todoText}</strong> <span class="text-gray-500">(${categoryText})</span> <span class="text-gray-400">${dateText}</span>
+                    </div>
+                    <button class="text-red-500 hover:text-red-700 delete-btn">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                `;
+                todoList.appendChild(li);
+
+                todoInput.value = '';
+                categoryInput.value = '';
+                dateInput.value = '';
+
+                updateTodos();
+            }
+        });
+
+        todoList.addEventListener('click', (e) => {
+            if (e.target.classList.contains('delete-btn')) {
+                e.target.closest('li').remove();
+                updateTodos();
+            }
+            if (e.target.classList.contains('toggle-status')) {
+                e.target.closest('li').classList.toggle('completed');
+                updateTodos();
+            }
+        });
+
+        searchInput.addEventListener('input', () => {
+            const searchText = searchInput.value.toLowerCase();
+            document.querySelectorAll('#todo-list li').forEach(li => {
+                const text = li.querySelector('.todo-text').textContent.toLowerCase();
+                li.style.display = text.includes(searchText) ? 'flex' : 'none';
+            });
+        });
+
+        filterSelect.addEventListener('change', () => {
+            const filterValue = filterSelect.value;
+            document.querySelectorAll('#todo-list li').forEach(li => {
+                if (filterValue === 'all') {
+                    li.style.display = 'flex';
+                } else if (filterValue === 'completed') {
+                    li.style.display = li.classList.contains('completed') ? 'flex' : 'none';
+                } else {
+                    li.style.display = li.classList.contains('completed') ? 'none' : 'flex';
+                }
+            });
+        });
+
+        darkModeToggle.addEventListener('click', () => {
+            document.body.classList.toggle('bg-gray-800');
+            document.body.classList.toggle('text-white');
+            document.getElementById('root').classList.toggle('bg-gray-900');
+            document.getElementById('root').classList.toggle('text-gray-300');
+        });
+
+        function updateTodos() {
+            localStorage.setItem('todos', todoList.innerHTML);
+        }
+
+        function loadTodos() {
+            todoList.innerHTML = localStorage.getItem('todos') || '';
+        }
+
+        loadTodos();
+    </script>
+</body>
 </html>

@@ -15,12 +15,15 @@ const TodoItem = ({ todo, onComplete, onDelete }) => {
 
     return (
         <div className={`todo-item ${todo.completed ? 'completed' : ''}`}>
-            <input
-                type="checkbox"
-                checked={todo.completed}
-                onChange={handleComplete}
+            <input 
+                type="checkbox" 
+                checked={todo.completed} 
+                onChange={handleComplete} 
             />
-            <span>{todo.text}</span>
+            
+            {/* Format: Todo (Category) - DueDate */}
+            <span>{todo.text} ({todo.category}) - {todo.dueDate || 'No Due Date'}</span>
+
             <button onClick={handleDelete} aria-label="Delete Todo">
                 <i className="fas fa-trash"></i>
             </button>

@@ -1,7 +1,17 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 const useTodos = () => {
-    const [todos, setTodos] = useState([]);
+    const [todos, setTodos] = useState(() => {
+        return JSON.parse(localStorage.getItem('todos')) || [];
+    });
+
+
+    const [selectedCategory, setSelectedCategory] = useState("all");
+
+    // ✅ Save todos to local storage whenever they change
+    useEffect(() => {
+        localStorage.setItem("todos", JSON.stringify(todos));
+    }, [todos]);
 
     const addTodo = (newTodo) => {
         setTodos((prevTodos) => [...prevTodos, newTodo]);
@@ -19,12 +29,22 @@ const useTodos = () => {
         );
     };
 
-    const filterTodos = (filter) => {
-        if (filter === 'all') return todos;
-        return todos.filter(todo => todo.category === filter);
-    };
+    // ✅ Filter todos based on category selection
+    const filteredTodos = selectedCategory === "all"
+        ? todos
+        : todos.filter(todo => todo.category.toLowerCase() === selectedCategory.toLowerCase());
+    
+    console.log("Selected Category:", selectedCategory);
+    console.log("Filtered Todos:", filteredTodos);
 
-    return { todos, addTodo, deleteTodo, completeTodo, filterTodos };
+    return { 
+        todos: filteredTodos, 
+        addTodo, 
+        deleteTodo, 
+        completeTodo, 
+        selectedCategory, 
+        setSelectedCategory 
+    };
 };
 
 export default useTodos;

@@ -9,8 +9,8 @@ const AddTodoForm = ({ addTodo }) => {
             id: Date.now(), 
             text: data.text, 
             category: data.category || 'General', 
-            dueDate: data.dueDate, 
-            CategoryFilter: data.CategoryFilter,
+            dueDate: data.dueDate || null,  
+            categoryFilter: data.categoryFilter || 'All',  
             completed: false
         });
         reset(); 
@@ -20,8 +20,18 @@ const AddTodoForm = ({ addTodo }) => {
         <form onSubmit={handleSubmit(onSubmit)}>
             <input {...register('text', { required: true })} placeholder="Todo" />
             {errors.text && <span>This field is required</span>}
+
             <input {...register('category')} placeholder="Category" />
-            <input type="date" {...register('dueDate')} />  
+
+            <input type="date" {...register('dueDate')} />
+
+            <select {...register('categoryFilter')}>
+                <option value="All">All</option>
+                <option value="Work">Work</option>
+                <option value="Personal">Personal</option>
+                <option value="Shopping">Shopping</option>
+            </select>
+
             <button type="submit">Add Todo</button>
         </form>
     );

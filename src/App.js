@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 const TodoApp = () => {
   const [todos, setTodos] = useState([]);
   const [todo, setTodo] = useState("");
-  const [category, setCategory] = useState("Work"); // Default category
+  const [category, setCategory] = useState("Work"); 
   const [date, setDate] = useState("");
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("All");

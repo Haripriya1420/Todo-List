@@ -8,7 +8,6 @@ const useTodos = () => {
 
     const [selectedCategory, setSelectedCategory] = useState("all");
 
-    // ✅ Save todos to local storage whenever they change
     useEffect(() => {
         localStorage.setItem("todos", JSON.stringify(todos));
     }, [todos]);
@@ -29,7 +28,6 @@ const useTodos = () => {
         );
     };
 
-    // ✅ Filter todos based on category selection
     const filteredTodos = selectedCategory === "all"
         ? todos
         : todos.filter(todo => todo.category.toLowerCase() === selectedCategory.toLowerCase());

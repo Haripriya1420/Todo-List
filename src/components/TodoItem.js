@@ -21,7 +21,7 @@ const TodoItem = ({ todo, onComplete, onDelete }) => {
                 onChange={handleComplete} 
             />
             
-            {/* Format: Todo (Category) - DueDate */}
+            {}
             <span>{todo.text} ({todo.category}) - {todo.dueDate || 'No Due Date'}</span>
 
             <button onClick={handleDelete} aria-label="Delete Todo">

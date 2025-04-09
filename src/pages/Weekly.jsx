@@ -8,16 +8,16 @@ import {
 
 const Weekly = ({ tasks, setTasks }) => {
   const today = new Date();
-  const start = startOfWeek(today, { weekStartsOn: 1 }); // Monday
+  const start = startOfWeek(today, { weekStartsOn: 1 }); 
   const end = endOfWeek(today, { weekStartsOn: 1 });
 
-  // Filter tasks of the current week
+  
   const weeklyTasks = tasks.filter((task) => {
     const taskDate = parseISO(task.date);
     return taskDate >= start && taskDate <= end;
   });
 
-  // Group tasks by day
+  
   const grouped = {};
   for (let i = 0; i < 7; i++) {
     const day = new Date(start);

@@ -12,7 +12,7 @@ const Planner = ({ tasks, setTasks }) => {
     setSelectedDate(date);
   };
 
-  // Format the selected date as 'YYYY-MM-DD'
+  
   const formatDate = (date) => {
     const year = date.getFullYear();
     const month = String(date.getMonth() + 1).padStart(2, "0");
@@ -22,7 +22,6 @@ const Planner = ({ tasks, setTasks }) => {
 
   const formattedSelectedDate = formatDate(selectedDate);
 
-  // Filter tasks by the selected date
   const filteredTodos = tasks.filter((todo) => todo.date === formattedSelectedDate);
 
   const handleAddTask = () => {
@@ -32,7 +31,7 @@ const Planner = ({ tasks, setTasks }) => {
       text: taskInput,
       category: categoryInput || "General",
       completed: false,
-      date: formattedSelectedDate, // Add the correctly formatted date
+      date: formattedSelectedDate, 
     };
 
     setTasks([...tasks, newTask]);

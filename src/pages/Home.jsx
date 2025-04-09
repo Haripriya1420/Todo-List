@@ -2,7 +2,7 @@ import React, { useState } from "react";
 
 const Home = ({ todos, setTodos }) => {
   const [todo, setTodo] = useState("");
-  const [category, setCategory] = useState("All"); // Set default value as 'All'
+  const [category, setCategory] = useState("All");
   const [date, setDate] = useState("");
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("All");
@@ -11,7 +11,7 @@ const Home = ({ todos, setTodos }) => {
   const addTodo = () => {
     if (todo.trim()) {
       const newTodo = { text: todo, category, date, completed: false };
-      setTodos([...todos, newTodo]); // Correctly using setTodos
+      setTodos([...todos, newTodo]); 
       setTodo("");
       setDate("");
     }
@@ -20,11 +20,11 @@ const Home = ({ todos, setTodos }) => {
   const toggleComplete = (index) => {
     const updatedTodos = [...todos];
     updatedTodos[index].completed = !updatedTodos[index].completed;
-    setTodos(updatedTodos); // Correctly using setTodos
+    setTodos(updatedTodos); 
   };
 
   const deleteTodo = (index) => {
-    setTodos(todos.filter((_, i) => i !== index)); // Correctly using setTodos
+    setTodos(todos.filter((_, i) => i !== index)); 
   };
 
   const filteredTodos = todos
@@ -69,7 +69,6 @@ const Home = ({ todos, setTodos }) => {
             <option value="Work">Work</option>
             <option value="Personal">Personal</option>
             <option value="Shopping">Shopping</option>
-            {/* Additional categories can be added here */}
           </select>
         </div>
 

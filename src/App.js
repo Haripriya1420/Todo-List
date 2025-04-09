@@ -6,15 +6,14 @@ import Weekly from "./pages/Weekly";
 import Goals from "./pages/Goals";
 
 const App = () => {
-  const [todos, setTodos] = useState([]); // Shared todos state
+  const [todos, setTodos] = useState([]); 
 
-  // Load todos from localStorage on component mount
+  
   useEffect(() => {
     const savedTodos = JSON.parse(localStorage.getItem("todos")) || [];
     setTodos(savedTodos);
   }, []);
 
-  // Save todos to localStorage whenever they change
   useEffect(() => {
     localStorage.setItem("todos", JSON.stringify(todos));
   }, [todos]);

@@ -61,12 +61,12 @@ const Goals = () => {
         ✨ My Beautiful Goals ✨
       </h2>
 
-      {/* Motivational Quote */}
+      
       <p className="text-lg italic text-purple-600 mb-6 text-center max-w-xl">
         “I never dreamed about success. I worked for it.”  
       </p>
 
-      {/* Progress Bar */}
+      
       {totalGoals > 0 && (
         <div className="w-full max-w-xl mb-6">
           <div className="flex justify-between text-sm font-medium mb-1">
@@ -82,7 +82,7 @@ const Goals = () => {
         </div>
       )}
 
-      {/* Input Fields */}
+      
       <div className="w-full max-w-xl bg-white p-6 rounded-3xl shadow-2xl mb-8">
         <input
           type="text"
@@ -117,7 +117,7 @@ const Goals = () => {
         </button>
       </div>
 
-      {/* Goal List */}
+      
       {sortedGoals.length > 0 ? (
         <ul className="space-y-5 w-full max-w-xl">
           {sortedGoals.map((goal, index) => (

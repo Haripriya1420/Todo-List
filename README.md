@@ -35,4 +35,4 @@ Make sure you have Node.js installed. You can download it from [here](https://no
 1. Clone this repository:
 
    ```bash
-   git clone https://github.com/Haripriya1420/Enhanced-Todo-App.git
+   git clone https://github.com/Haripriya1420/Todo-List

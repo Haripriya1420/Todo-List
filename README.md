@@ -1,22 +1,20 @@
-# Todo List App
+# Enhanced Todo List App
 
-A simple and interactive Todo List application built using React.js. This app allows users to add, manage, and categorize their tasks. The application supports features such as:
-
-- Adding tasks with a category (Work, Personal, Shopping).
-- Filtering tasks by category and status (All, Pending, Completed).
-- Dark Mode for better visual experience.
-- Task search functionality.
-- Storing tasks in local storage to persist data across page reloads.
+A modern and interactive Todo List application built with React.js. This app allows users to manage their tasks efficiently across multiple pages, including "Home", "Today", "Weekly", and "Goals". It also includes a dark mode feature, task categorization, and persistent data storage using local storage.
 
 ## Features
 
-- **Add Todo**: Allows users to add new tasks to the todo list.
-- **Categorize Todo**: Categorize tasks into "Work", "Personal", or "Shopping".
+- **Home Page**: Displays all tasks with the ability to filter by category and status.
+- **Today Page**: Shows only tasks for the current day.
+- **Weekly Page**: Displays tasks for the upcoming week.
+- **Goals Page**: Lets users set and track goals for the future.
+- **Add Todo**: Allows users to add new tasks with categories such as "Work", "Personal", and "Shopping".
+- **Categorize Todo**: Categorize tasks into specific categories.
 - **Search Todo**: Search through your todos by their text.
 - **Status Filter**: Filter tasks by their completion status ("All", "Pending", "Completed").
 - **Dark Mode**: Toggle dark mode for a better visual experience.
 - **Task Completion**: Mark tasks as completed or pending.
-- **Local Storage**: Save tasks in local storage to persist data.
+- **Local Storage**: Save tasks in local storage to persist data across page reloads.
 
 ## Tech Stack
 
@@ -37,4 +35,4 @@ Make sure you have Node.js installed. You can download it from [here](https://no
 1. Clone this repository:
 
    ```bash
-   git clone https://github.com/Haripriya1420/Todo-List.git
+   git clone https://github.com/Haripriya1420/Enhanced-Todo-App.git

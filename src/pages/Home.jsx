@@ -1,4 +1,9 @@
 import React, { useState } from "react";
+import { FaTrash } from "react-icons/fa";
+import { ToastContainer, toast } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
+
+
 
 const Home = ({ todos, setTodos }) => {
   const [todo, setTodo] = useState("");
@@ -10,22 +15,35 @@ const Home = ({ todos, setTodos }) => {
 
   const addTodo = () => {
     if (todo.trim()) {
-      const newTodo = { text: todo, category, date, completed: false };
-      setTodos([...todos, newTodo]); 
+      const newTodo = {
+        id: Date.now(), // Unique identifier
+        text: todo,
+        category,
+        date,
+        completed: false
+      };
+      setTodos([...todos, newTodo]);
       setTodo("");
       setDate("");
     }
   };
-
-  const toggleComplete = (index) => {
-    const updatedTodos = [...todos];
-    updatedTodos[index].completed = !updatedTodos[index].completed;
-    setTodos(updatedTodos); 
+  
+  const toggleComplete = (id) => {
+    const updatedTodos = todos.map((t) =>
+      t.id === id ? { ...t, completed: !t.completed } : t
+    );
+    setTodos(updatedTodos);
   };
-
-  const deleteTodo = (index) => {
-    setTodos(todos.filter((_, i) => i !== index)); 
+  
+  const deleteTodo = (id) => {
+    const confirmDelete = window.confirm("Are you sure you want to delete this todo?");
+    if (confirmDelete) {
+      setTodos(todos.filter((t) => t.id !== id));
+      toast.success("Todo deleted successfully!");
+    }
   };
+  
+  
 
   const filteredTodos = todos
     .filter((t) => category === "All" || t.category === category)
@@ -94,13 +112,17 @@ const Home = ({ todos, setTodos }) => {
         {filteredTodos.length > 0 ? (
           <ul>
             {filteredTodos.map((t, index) => (
-              <li key={index} className={`flex justify-between items-center p-4 rounded-lg shadow mb-2 ${darkMode ? "bg-gray-700" : "bg-gray-100"}`}>
+              <li key={t.id} className={`flex justify-between items-center p-4 rounded-lg shadow mb-2 ${darkMode ? "bg-gray-700" : "bg-gray-100"}`}>
                 <div>
-                  <input type="checkbox" checked={t.completed} onChange={() => toggleComplete(index)} className="mr-2" />
+                  <input type="checkbox" checked={t.completed} onChange={() => toggleComplete(t.id)} className="mr-2" />
                   <strong>{t.text}</strong> <span className="text-gray-400">{t.date}</span>
                 </div>
-                <button onClick={() => deleteTodo(index)} className="text-red-500 hover:text-red-700">
-                  <i className="fas fa-trash"></i>
+                <button
+                  onClick={() => deleteTodo(t.id)}
+                  className="text-red-500 hover:text-red-700"
+                  aria-label="Delete Todo"
+                >
+                  <FaTrash />
                 </button>
               </li>
             ))}
@@ -115,6 +137,7 @@ const Home = ({ todos, setTodos }) => {
             GitHub Project
           </a>
         </div>
+        <ToastContainer position="top-center" autoClose={2000} hideProgressBar={false} />
       </div>
     </div>
   );

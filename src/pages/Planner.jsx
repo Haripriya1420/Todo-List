@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
 import "./calendarStyle.css";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const Planner = ({ tasks, setTasks }) => {
   const [selectedDate, setSelectedDate] = useState(new Date());
@@ -51,16 +53,44 @@ const Planner = ({ tasks, setTasks }) => {
   };
 
   const handleDeleteTask = (taskToDelete) => {
-    const updatedTodos = tasks.filter(
-      (task) =>
-        !(
-          task.text === taskToDelete.text &&
-          task.date === taskToDelete.date &&
-          task.category === taskToDelete.category
-        )
+    toast.info(
+      <div>
+        <p>Are you sure you want to delete this task?</p>
+        <div className="flex justify-end space-x-2 mt-2">
+          <button
+            onClick={() => {
+              const updatedTodos = tasks.filter(
+                (task) =>
+                  !(
+                    task.text === taskToDelete.text &&
+                    task.date === taskToDelete.date &&
+                    task.category === taskToDelete.category
+                  )
+              );
+              setTasks(updatedTodos);
+              toast.dismiss(); // close toast after delete
+            }}
+            className="bg-red-500 text-white px-3 py-1 rounded text-sm"
+          >
+            Delete
+          </button>
+          <button
+            onClick={() => toast.dismiss()}
+            className="bg-gray-300 px-3 py-1 rounded text-sm"
+          >
+            Cancel
+          </button>
+        </div>
+      </div>,
+      {
+        position: "top-center",
+        autoClose: false,
+        closeOnClick: false,
+        closeButton: false,
+        draggable: false,
+      }
     );
-    setTasks(updatedTodos);
-  };
+  };  
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-yellow-100 via-pink-100 to-pink-200 p-4 flex flex-col items-center">
@@ -134,6 +164,7 @@ const Planner = ({ tasks, setTasks }) => {
       ) : (
         <p className="text-center text-gray-500">No tasks for this date 🎉</p>
       )}
+      <ToastContainer />
     </div>
   );
 };

@@ -5,6 +5,7 @@ const Goals = () => {
   const [goalInput, setGoalInput] = useState("");
   const [deadlineInput, setDeadlineInput] = useState("");
   const [categoryInput, setCategoryInput] = useState("");
+  const [congratsMessage, setCongratsMessage] = useState("");
 
   const categoryOptions = ["📈 Career", "🏋🏻 Gym", "💰 Finance", "📚 Education", "🏡 Personal"];
 
@@ -32,24 +33,32 @@ const Goals = () => {
     setCategoryInput("");
   };
 
-  const toggleComplete = (index) => {
+  const toggleComplete = (actualIndex) => {
     const updatedGoals = [...goals];
-    updatedGoals[index].completed = !updatedGoals[index].completed;
+    updatedGoals[actualIndex].completed = !updatedGoals[actualIndex].completed;
+    setGoals(updatedGoals);
+    localStorage.setItem("goals", JSON.stringify(updatedGoals));
+
+    if (updatedGoals[actualIndex].completed) {
+      setCongratsMessage(`🎉 Congrats on achieving: "${updatedGoals[actualIndex].text}"`);
+      setTimeout(() => setCongratsMessage(""), 4000);
+    }
+  };
+
+  const handleDelete = (actualIndex) => {
+    const updatedGoals = goals.filter((_, i) => i !== actualIndex);
     setGoals(updatedGoals);
     localStorage.setItem("goals", JSON.stringify(updatedGoals));
   };
 
-  const handleDelete = (index) => {
-    const updatedGoals = goals.filter((_, i) => i !== index);
-    setGoals(updatedGoals);
-    localStorage.setItem("goals", JSON.stringify(updatedGoals));
-  };
-
-  const sortedGoals = [...goals].sort((a, b) => {
-    if (!a.deadline) return 1;
-    if (!b.deadline) return -1;
-    return new Date(a.deadline) - new Date(b.deadline);
-  });
+  // Attach index to each goal for accurate operations post-sort
+  const sortedGoals = goals
+    .map((goal, i) => ({ ...goal, originalIndex: i }))
+    .sort((a, b) => {
+      if (!a.deadline) return 1;
+      if (!b.deadline) return -1;
+      return new Date(a.deadline) - new Date(b.deadline);
+    });
 
   const totalGoals = goals.length;
   const completedGoals = goals.filter((goal) => goal.completed).length;
@@ -61,12 +70,16 @@ const Goals = () => {
         ✨ My Beautiful Goals ✨
       </h2>
 
-      
       <p className="text-lg italic text-purple-600 mb-6 text-center max-w-xl">
-        “I never dreamed about success. I worked for it.”  
+        “I never dreamed about success. I worked for it.”
       </p>
 
-      
+      {congratsMessage && (
+        <div className="mb-6 p-4 bg-green-100 border-l-4 border-green-500 text-green-800 rounded-xl shadow text-center max-w-xl">
+          {congratsMessage}
+        </div>
+      )}
+
       {totalGoals > 0 && (
         <div className="w-full max-w-xl mb-6">
           <div className="flex justify-between text-sm font-medium mb-1">
@@ -82,7 +95,6 @@ const Goals = () => {
         </div>
       )}
 
-      
       <div className="w-full max-w-xl bg-white p-6 rounded-3xl shadow-2xl mb-8">
         <input
           type="text"
@@ -113,11 +125,10 @@ const Goals = () => {
           onClick={handleAddGoal}
           className="w-full bg-purple-500 text-white py-3 px-4 rounded-xl hover:bg-purple-600 transition font-semibold shadow-md"
         >
-           Add Goal
+          Add Goal
         </button>
       </div>
 
-      
       {sortedGoals.length > 0 ? (
         <ul className="space-y-5 w-full max-w-xl">
           {sortedGoals.map((goal, index) => (
@@ -130,7 +141,7 @@ const Goals = () => {
                   <input
                     type="checkbox"
                     checked={goal.completed}
-                    onChange={() => toggleComplete(index)}
+                    onChange={() => toggleComplete(goal.originalIndex)}
                     className="h-5 w-5 text-purple-600"
                   />
                   <span
@@ -148,10 +159,23 @@ const Goals = () => {
                   <span className="text-xs px-2 py-1 bg-pink-200 text-pink-700 rounded-full font-medium shadow-sm">
                     {goal.category}
                   </span>
+                  {goal.completed && (
+                    <button
+                      onClick={() => {
+                        handleDelete(goal.originalIndex);
+                        setGoalInput("");
+                        setDeadlineInput("");
+                        setCategoryInput("");
+                      }}
+                      className="text-xs text-purple-600 hover:text-purple-800 underline mt-1"
+                    >
+                      ➕ Set a New Goal
+                    </button>
+                  )}
                 </div>
               </div>
               <button
-                onClick={() => handleDelete(index)}
+                onClick={() => handleDelete(goal.originalIndex)}
                 className="text-red-400 hover:text-red-600 text-lg ml-4"
               >
                 ✖
@@ -160,7 +184,9 @@ const Goals = () => {
           ))}
         </ul>
       ) : (
-        <p className="text-center text-gray-600 mt-6">No goals yet! Setting goals is the first step in turning the invisible into the visible. ✨</p>
+        <p className="text-center text-gray-600 mt-6">
+          No goals yet! Setting goals is the first step in turning the invisible into the visible. ✨
+        </p>
       )}
     </div>
   );

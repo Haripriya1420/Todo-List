@@ -1,4 +1,9 @@
 import React, { useState } from "react";
+import { FaTrash } from "react-icons/fa";
+import { ToastContainer, toast } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
+
+
 
 const Home = ({ todos, setTodos }) => {
   const [todo, setTodo] = useState("");
@@ -9,23 +14,41 @@ const Home = ({ todos, setTodos }) => {
   const [darkMode, setDarkMode] = useState(false);
 
   const addTodo = () => {
-    if (todo.trim()) {
-      const newTodo = { text: todo, category, date, completed: false };
-      setTodos([...todos, newTodo]); 
-      setTodo("");
-      setDate("");
+    if (!todo.trim()) return;
+  
+    if (category === "All") {
+      toast.error("Please select a specific category before adding a todo.");
+      return;
+    }
+  
+    const newTodo = {
+      id: Date.now(),
+      text: todo,
+      category,
+      date,
+      completed: false,
+    };
+    setTodos([...todos, newTodo]);
+    setTodo("");
+    setDate("");
+  };  
+  
+  const toggleComplete = (id) => {
+    const updatedTodos = todos.map((t) =>
+      t.id === id ? { ...t, completed: !t.completed } : t
+    );
+    setTodos(updatedTodos);
+  };
+  
+  const deleteTodo = (id) => {
+    const confirmDelete = window.confirm("Are you sure you want to delete this todo?");
+    if (confirmDelete) {
+      setTodos(todos.filter((t) => t.id !== id));
+      toast.success("Todo deleted successfully!");
     }
   };
-
-  const toggleComplete = (index) => {
-    const updatedTodos = [...todos];
-    updatedTodos[index].completed = !updatedTodos[index].completed;
-    setTodos(updatedTodos); 
-  };
-
-  const deleteTodo = (index) => {
-    setTodos(todos.filter((_, i) => i !== index)); 
-  };
+  
+  
 
   const filteredTodos = todos
     .filter((t) => category === "All" || t.category === category)
@@ -41,7 +64,7 @@ const Home = ({ todos, setTodos }) => {
       <div className={`p-10 rounded-2xl shadow-2xl w-full max-w-lg ${darkMode ? "bg-gray-800" : "bg-white"}`}>
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-4xl font-extrabold">Todo List</h1>
-          <button onClick={() => setDarkMode(!darkMode)} className="bg-purple-600 text-white px-4 py-2 rounded-full">Dark Mode</button>
+          <button onClick={() => setDarkMode(!darkMode)} className="bg-purple-600 text-white px-4 py-2 rounded-full">{darkMode ? "Light Mode" : "Dark Mode"}</button>
         </div>
 
         <input 
@@ -55,7 +78,7 @@ const Home = ({ todos, setTodos }) => {
         <div className="flex space-x-2 mb-4">
           <input 
             type="text" 
-            placeholder="Todo" 
+            placeholder="Add Todo" 
             value={todo} 
             onChange={(e) => setTodo(e.target.value)} 
             className={`w-2/3 p-4 border rounded-full ${darkMode ? "bg-gray-700 text-white" : "bg-white text-black"}`} 
@@ -72,11 +95,18 @@ const Home = ({ todos, setTodos }) => {
           </select>
         </div>
 
-        <input 
-          type="date" 
-          value={date} 
-          onChange={(e) => setDate(e.target.value)} 
-          className={`w-full p-4 border rounded-full mb-4 ${darkMode ? "bg-gray-700 text-white" : "bg-white text-black"}`} 
+        <input
+          type="text"
+          onFocus={(e) => (e.target.type = "date")}
+          onBlur={(e) => {
+            if (!e.target.value) e.target.type = "text";
+          }}
+          placeholder="Target date"
+          value={date}
+          onChange={(e) => setDate(e.target.value)}
+          className={`w-full p-4 border rounded-full mb-4 ${
+            darkMode ? "bg-gray-700 text-white" : "bg-white text-black"
+          }`}
         />
 
         <button onClick={addTodo} className="bg-purple-600 text-white w-full p-4 rounded-full mb-4">Add Todo</button>
@@ -94,13 +124,22 @@ const Home = ({ todos, setTodos }) => {
         {filteredTodos.length > 0 ? (
           <ul>
             {filteredTodos.map((t, index) => (
-              <li key={index} className={`flex justify-between items-center p-4 rounded-lg shadow mb-2 ${darkMode ? "bg-gray-700" : "bg-gray-100"}`}>
+              <li key={t.id} className={`flex justify-between items-center p-4 rounded-lg shadow mb-2 ${darkMode ? "bg-gray-700" : "bg-gray-100"}`}>
                 <div>
-                  <input type="checkbox" checked={t.completed} onChange={() => toggleComplete(index)} className="mr-2" />
-                  <strong>{t.text}</strong> <span className="text-gray-400">{t.date}</span>
+                  <input type="checkbox" checked={t.completed} onChange={() => toggleComplete(t.id)} className="mr-2" />
+                  <strong className={t.completed ? "line-through text-gray-500" : ""}>
+                    {t.text}
+                  </strong>
+                  <span className="text-gray-400 ml-2">{new Date(t.date).toLocaleDateString()}</span>
+
+
                 </div>
-                <button onClick={() => deleteTodo(index)} className="text-red-500 hover:text-red-700">
-                  <i className="fas fa-trash"></i>
+                <button
+                  onClick={() => deleteTodo(t.id)}
+                  className="text-red-500 hover:text-red-700"
+                  aria-label="Delete Todo"
+                >
+                  <FaTrash />
                 </button>
               </li>
             ))}
@@ -115,6 +154,7 @@ const Home = ({ todos, setTodos }) => {
             GitHub Project
           </a>
         </div>
+        <ToastContainer position="top-center" autoClose={2000} hideProgressBar={false} />
       </div>
     </div>
   );

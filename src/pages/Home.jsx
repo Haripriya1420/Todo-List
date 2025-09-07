@@ -14,19 +14,24 @@ const Home = ({ todos, setTodos }) => {
   const [darkMode, setDarkMode] = useState(false);
 
   const addTodo = () => {
-    if (todo.trim()) {
-      const newTodo = {
-        id: Date.now(), // Unique identifier
-        text: todo,
-        category,
-        date,
-        completed: false
-      };
-      setTodos([...todos, newTodo]);
-      setTodo("");
-      setDate("");
+    if (!todo.trim()) return;
+  
+    if (category === "All") {
+      toast.error("Please select a specific category before adding a todo.");
+      return;
     }
-  };
+  
+    const newTodo = {
+      id: Date.now(),
+      text: todo,
+      category,
+      date,
+      completed: false,
+    };
+    setTodos([...todos, newTodo]);
+    setTodo("");
+    setDate("");
+  };  
   
   const toggleComplete = (id) => {
     const updatedTodos = todos.map((t) =>
@@ -59,7 +64,7 @@ const Home = ({ todos, setTodos }) => {
       <div className={`p-10 rounded-2xl shadow-2xl w-full max-w-lg ${darkMode ? "bg-gray-800" : "bg-white"}`}>
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-4xl font-extrabold">Todo List</h1>
-          <button onClick={() => setDarkMode(!darkMode)} className="bg-purple-600 text-white px-4 py-2 rounded-full">Dark Mode</button>
+          <button onClick={() => setDarkMode(!darkMode)} className="bg-purple-600 text-white px-4 py-2 rounded-full">{darkMode ? "Light Mode" : "Dark Mode"}</button>
         </div>
 
         <input 
@@ -73,7 +78,7 @@ const Home = ({ todos, setTodos }) => {
         <div className="flex space-x-2 mb-4">
           <input 
             type="text" 
-            placeholder="Todo" 
+            placeholder="Add Todo" 
             value={todo} 
             onChange={(e) => setTodo(e.target.value)} 
             className={`w-2/3 p-4 border rounded-full ${darkMode ? "bg-gray-700 text-white" : "bg-white text-black"}`} 
@@ -90,11 +95,18 @@ const Home = ({ todos, setTodos }) => {
           </select>
         </div>
 
-        <input 
-          type="date" 
-          value={date} 
-          onChange={(e) => setDate(e.target.value)} 
-          className={`w-full p-4 border rounded-full mb-4 ${darkMode ? "bg-gray-700 text-white" : "bg-white text-black"}`} 
+        <input
+          type="text"
+          onFocus={(e) => (e.target.type = "date")}
+          onBlur={(e) => {
+            if (!e.target.value) e.target.type = "text";
+          }}
+          placeholder="Target date"
+          value={date}
+          onChange={(e) => setDate(e.target.value)}
+          className={`w-full p-4 border rounded-full mb-4 ${
+            darkMode ? "bg-gray-700 text-white" : "bg-white text-black"
+          }`}
         />
 
         <button onClick={addTodo} className="bg-purple-600 text-white w-full p-4 rounded-full mb-4">Add Todo</button>
@@ -115,7 +127,12 @@ const Home = ({ todos, setTodos }) => {
               <li key={t.id} className={`flex justify-between items-center p-4 rounded-lg shadow mb-2 ${darkMode ? "bg-gray-700" : "bg-gray-100"}`}>
                 <div>
                   <input type="checkbox" checked={t.completed} onChange={() => toggleComplete(t.id)} className="mr-2" />
-                  <strong>{t.text}</strong> <span className="text-gray-400">{t.date}</span>
+                  <strong className={t.completed ? "line-through text-gray-500" : ""}>
+                    {t.text}
+                  </strong>
+                  <span className="text-gray-400 ml-2">{new Date(t.date).toLocaleDateString()}</span>
+
+
                 </div>
                 <button
                   onClick={() => deleteTodo(t.id)}

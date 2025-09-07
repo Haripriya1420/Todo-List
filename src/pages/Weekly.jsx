@@ -1,10 +1,5 @@
 import React from "react";
-import {
-  startOfWeek,
-  endOfWeek,
-  format,
-  parseISO,
-} from "date-fns";
+import {startOfWeek, endOfWeek, format, parseISO,} from "date-fns";
 
 const Weekly = ({ tasks, setTasks }) => {
   const today = new Date();

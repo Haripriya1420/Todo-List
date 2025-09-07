@@ -114,7 +114,7 @@ const Planner = ({ tasks, setTasks }) => {
           type="text"
           value={categoryInput}
           onChange={(e) => setCategoryInput(e.target.value)}
-          placeholder="Category (optional)"
+          placeholder="Category"
           className="w-full border border-gray-300 rounded-md p-2 mb-2"
         />
         <button
